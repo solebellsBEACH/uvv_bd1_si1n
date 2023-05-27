@@ -1,3 +1,23 @@
+-- Tabelas que devem ser criadas em um primeiro momento
+CREATE TABLE clientes (
+    cliente_id NUMERIC(38) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    nome VARCHAR(255) NOT NULL,
+    telefone1 VARCHAR(20),
+    telefone2 VARCHAR(20),
+    telefone3 VARCHAR(20),
+    CONSTRAINT cliente_id PRIMARY KEY (cliente_id)
+);
+COMMENT ON COLUMN clientes.cliente_id IS 'Identificador único para cada registro na tabela. É usado para referenciar de forma exclusiva cada entrada, facilitar a recuperação de dados específicos e nessa tabela está como primaryKey';
+COMMENT ON COLUMN clientes.email IS 'Armazena o endereço de e-mail associado a cada registro. Essa coluna é útil para comunicações por e-mail e permite a autenticação do usuário.';
+COMMENT ON COLUMN clientes.nome IS 'Armazena o nome associado a um registro específico. Essa coluna é útil para identificar e pesquisar registros com base no nome de uma entidade.
+';
+COMMENT ON COLUMN clientes.telefone1 IS 'Contém o número de telefone associado a um registro. Essa coluna é útil para comunicação por telefone e permite entrar em contato com os usuários de forma rápida e direta.
+';
+COMMENT ON COLUMN clientes.telefone2 IS 'Contém o número de telefone associado a um registro. Essa coluna é útil para comunicação por telefone e permite entrar em contato com os usuários de forma rápida e direta.
+';
+COMMENT ON COLUMN clientes.telefone3 IS 'Contém o número de telefone associado a um registro. Essa coluna é útil para comunicação por telefone e permite entrar em contato com os usuários de forma rápida e direta.
+';
 CREATE TABLE produtos (
     produto_id NUMERIC(38) NOT NULL,
     nome VARCHAR(255) NOT NULL,
@@ -45,6 +65,8 @@ COMMENT ON COLUMN lojas.logo_mime_type IS 'Registra qual a extensão do arquivo 
 COMMENT ON COLUMN lojas.logo_arquivo IS 'Armazena o arquivo da logo';
 COMMENT ON COLUMN lojas.logo_charset IS 'Armazena dados sobre a logo';
 COMMENT ON COLUMN lojas.logo_ultima_atualizacao IS 'Armazena a data da última alteração da logo';
+
+-- Tabelas que devem ser criadas em segundo momento
 CREATE TABLE estoques (
     estoque_id NUMERIC(38) NOT NULL,
     loja_id NUMERIC(38) NOT NULL,
@@ -58,25 +80,7 @@ Neste caso usado para identificar uma loja, nessa tabela está como foreignKey';
 COMMENT ON COLUMN estoques.produto_id IS 'Identificador único para cada registro na tabela. É usado para referenciar de forma exclusiva cada entrada e facilitar a recuperação de dados específicos.
 Neste caso usado para identificar um produto, nessa tabela está como foreignKey';
 COMMENT ON COLUMN estoques.quantidade IS 'Armazena a quantidade do produto no estoque';
-CREATE TABLE clientes (
-    cliente_id NUMERIC(38) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    nome VARCHAR(255) NOT NULL,
-    telefone1 VARCHAR(20),
-    telefone2 VARCHAR(20),
-    telefone3 VARCHAR(20),
-    CONSTRAINT cliente_id PRIMARY KEY (cliente_id)
-);
-COMMENT ON COLUMN clientes.cliente_id IS 'Identificador único para cada registro na tabela. É usado para referenciar de forma exclusiva cada entrada, facilitar a recuperação de dados específicos e nessa tabela está como primaryKey';
-COMMENT ON COLUMN clientes.email IS 'Armazena o endereço de e-mail associado a cada registro. Essa coluna é útil para comunicações por e-mail e permite a autenticação do usuário.';
-COMMENT ON COLUMN clientes.nome IS 'Armazena o nome associado a um registro específico. Essa coluna é útil para identificar e pesquisar registros com base no nome de uma entidade.
-';
-COMMENT ON COLUMN clientes.telefone1 IS 'Contém o número de telefone associado a um registro. Essa coluna é útil para comunicação por telefone e permite entrar em contato com os usuários de forma rápida e direta.
-';
-COMMENT ON COLUMN clientes.telefone2 IS 'Contém o número de telefone associado a um registro. Essa coluna é útil para comunicação por telefone e permite entrar em contato com os usuários de forma rápida e direta.
-';
-COMMENT ON COLUMN clientes.telefone3 IS 'Contém o número de telefone associado a um registro. Essa coluna é útil para comunicação por telefone e permite entrar em contato com os usuários de forma rápida e direta.
-';
+
 CREATE TABLE envios (
     envio_id NUMERIC(38) NOT NULL,
     status VARCHAR(15) NOT NULL,
@@ -107,6 +111,8 @@ Neste caso usado para identificar um cliente, nessa tabela está como foreignKey
 COMMENT ON COLUMN pedidos.status IS 'Registra a atual situação do pedido';
 COMMENT ON COLUMN pedidos.loja_id IS 'Identificador único para cada registro na tabela. É usado para referenciar de forma exclusiva cada entrada e facilitar a recuperação de dados específicos.
 Neste caso usado para identificar uma loja, nessa tabela está como foreignKey';
+
+-- Tabelas que devem ser criadas em terceiro momento
 CREATE TABLE pedidos_itens (
     produto_id NUMERIC(38) NOT NULL,
     pedido_id NUMERIC(38) NOT NULL,
