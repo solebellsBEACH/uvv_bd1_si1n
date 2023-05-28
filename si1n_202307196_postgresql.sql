@@ -1,3 +1,17 @@
+-- Conferindo de existe o BD e o Usuário
+DROP DATABASE IF EXISTS uvv;
+DROP ROLE IF EXISTS lucas_xavier;
+DROP SCHEMA IF EXISTS lojas;
+CREATE USER lucas_xavier WITH SUPERUSER CREATEDB CREATEROLE ENCRYPTED PASSWORD 'root';
+CREATE DATABASE uvv OWNER lucas_xavier TEMPLATE template0 ENCODING 'UTF8' LC_COLLATE 'pt_BR.UTF-8' LC_CTYPE 'pt_BR.UTF-8' CONNECTION LIMIT -1;
+CREATE SCHEMA lojas AUTHORIZATION lucas_xavier;
+SET SEARCH_PATH TO lojas,
+    "$user",
+    public;
+ALTER USER lucas_xavier
+SET SEARCH_PATH TO lojas,
+    "$user",
+    public;
 -- Criando Table de produtos
 CREATE TABLE produtos (
     produto_id NUMERIC(38) NOT NULL,
@@ -13,7 +27,7 @@ CREATE TABLE produtos (
 );
 -- Criando Table de lojas
 CREATE TABLE lojas (
-    loja_id NUMERIC(38) NOT null PRIMARY KEY ,
+    loja_id NUMERIC(38) NOT null PRIMARY KEY,
     nome VARCHAR(255) NOT NULL CHECK (nome ~* '^[A-Za-zÀ-ÿ\s]+$'),
     endereco_web VARCHAR(100),
     endereco_fisico VARCHAR(512),
@@ -24,12 +38,16 @@ CREATE TABLE lojas (
     logo_arquivo VARCHAR(512),
     logo_charset VARCHAR(512),
     logo_ultima_atualizacao DATE,
-    CONSTRAINT loja_id CHECK (COALESCE(endereco_web, endereco_fisico) IS NOT NULL)
+    CONSTRAINT loja_id CHECK (
+        COALESCE(endereco_web, endereco_fisico) IS NOT NULL
+    )
 );
 -- Criando Table de clientes
 CREATE TABLE clientes (
     cliente_id NUMERIC(38) NOT NULL,
-    email VARCHAR(255) NOT NULL check (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'),
+    email VARCHAR(255) NOT NULL check (
+        email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
+    ),
     nome VARCHAR(255) NOT NULL CHECK (nome ~* '^[A-Za-zÀ-ÿ\s]+$'),
     telefone1 VARCHAR(20) CHECK (telefone1 ~ '^\+[0-9]{1,3}-[0-9]{1,14}$'),
     telefone2 VARCHAR(20) CHECK (telefone2 ~ '^\+[0-9]{1,3}-[0-9]{1,14}$'),
@@ -47,7 +65,9 @@ CREATE TABLE estoques (
 -- Criando Table de envios
 CREATE TABLE envios (
     envio_id NUMERIC(38) NOT NULL,
-    status VARCHAR(15) NOT NULL CHECK (status IN ('ENVIADO', 'CRIADO', 'TRANSITO', 'ENTREGUE')),
+    status VARCHAR(15) NOT NULL CHECK (
+        status IN ('ENVIADO', 'CRIADO', 'TRANSITO', 'ENTREGUE')
+    ),
     loja_id NUMERIC(38) NOT NULL,
     cliente_id NUMERIC(38) NOT NULL,
     endereco_entrega VARCHAR(512) NOT NULL,
@@ -58,7 +78,16 @@ CREATE TABLE pedidos (
     pedido_id NUMERIC(38) NOT NULL,
     data_hora TIMESTAMP NOT NULL,
     cliente_id NUMERIC(38) NOT NULL,
-    status VARCHAR(15) NOT NULL CHECK (status IN ('CANCELADO', 'COMPLETO', 'ABERTO', 'PAGO', 'REEMBOLSADO', 'ENVIADO')),
+    status VARCHAR(15) NOT NULL CHECK (
+        status IN (
+            'CANCELADO',
+            'COMPLETO',
+            'ABERTO',
+            'PAGO',
+            'REEMBOLSADO',
+            'ENVIADO'
+        )
+    ),
     loja_id NUMERIC(38) NOT NULL,
     CONSTRAINT pedidos_id PRIMARY KEY (pedido_id)
 );
@@ -72,7 +101,6 @@ CREATE TABLE pedidos_itens (
     envio_id NUMERIC(38) NOT NULL,
     CONSTRAINT pedido_id PRIMARY KEY (produto_id, pedido_id)
 );
-
 ALTER TABLE estoques
 ADD CONSTRAINT produtos_estoques_fk FOREIGN KEY (produto_id) REFERENCES produtos (produto_id) ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE;
 ALTER TABLE pedidos_itens
@@ -91,7 +119,6 @@ ALTER TABLE pedidos_itens
 ADD CONSTRAINT envios_pedidos_itens_fk FOREIGN KEY (envio_id) REFERENCES envios (envio_id) ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE;
 ALTER TABLE pedidos_itens
 ADD CONSTRAINT pedidos_pedidos_itens_fk FOREIGN KEY (pedido_id) REFERENCES pedidos (pedido_id) ON DELETE NO ACTION ON UPDATE NO ACTION NOT DEFERRABLE;
-
 -- COMENTÁRIOS PRODUTOS
 COMMENT ON COLUMN produtos.produto_id IS 'Identificador único para cada registro na tabela. É usado para referenciar de forma exclusiva cada entrada, facilitar a recuperação de dados específicos e nessa tabela está como primaryKey';
 COMMENT ON COLUMN produtos.preco_unitario IS 'Armazena o valor unitário do produto';
